@@ -1,0 +1,55 @@
+ActiveAdmin.register Group do
+  permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
+
+  menu label: "Gruppe" 
+
+  index :title => "Gruppe" do
+    #column :guid
+    column :name
+    column :versiondate
+    column :versionid
+    column :description
+    column :created_at
+    column :updated_at
+    actions
+  end  
+
+  form do |f|
+
+    if group.id == nil
+      $uuid=SecureRandom.uuid 
+    else
+      $uuid=RootTable.find(root_table.id).guid
+    end
+
+    f.object.guid = $uuid 
+    f.object.versiondate = DateTime.now
+    f.object.versionid = RootTable.maximum("versionid")
+    f.object.created_at = DateTime.now
+    f.object.updated_at = DateTime.now
+    f.inputs do
+      f.input :guid, :input_html => { :readonly => true }
+      f.input :name
+      f.input :versiondate
+      f.input :versionid
+      f.input :description
+      f.input :created_at
+      f.input :updated_at
+    end
+    f.actions    
+  end
+
+  controller do
+    
+    def scoped_collection
+      RootTable.joins(:collection).where("root_tables.guid=collections.guid")
+    end
+
+    after_save :update_object
+  
+    def update_object(guid)
+      Collection.create(:guid => $uuid)
+    end
+    
+  end  
+end

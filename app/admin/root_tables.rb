@@ -1,7 +1,7 @@
 ActiveAdmin.register RootTable do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
   
-  menu label: "Gesamt2"  
+  menu label: "Gesamt" 
 
   #filter :"subscription_billing_plan_name" , :as => :select, :collection => RootTable.all.map(&:name)  
 
@@ -14,7 +14,7 @@ ActiveAdmin.register RootTable do
   filter :created_at, label: 'created_at', as: :date_range
   filter :updated_at, label: 'updated_at', as: :date_range
 
-  index :title => "Gesamt" do
+  index :title => "Gesamt"do
     #column :guid
     column :name
     column :versiondate
@@ -32,14 +32,13 @@ ActiveAdmin.register RootTable do
     else
       $uuid=RootTable.find(root_table.id).guid
     end
-
+    
     f.object.guid = $uuid 
     f.object.versiondate = DateTime.now
     f.object.versionid = RootTable.maximum("versionid")
     f.object.created_at = DateTime.now
     f.object.updated_at = DateTime.now
     f.inputs do
-      #new_record: 'Leave Comment'
       f.select :art, ["Fachobjekt", "Gruppe", "Externes Dokument"], :prompt => 'Bitte wählen! '
       f.input :guid, :input_html => { :readonly => true }
       f.input :name

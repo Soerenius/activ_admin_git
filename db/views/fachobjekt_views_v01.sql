@@ -1,0 +1,1 @@
+SELECT r.guid, r.name, r.versiondate, r.versionid, r.description FROM root_tables r, object_tables o WHERE r.guid=o.guid

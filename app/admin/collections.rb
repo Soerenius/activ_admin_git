@@ -1,9 +1,9 @@
 ActiveAdmin.register Collection do
   permit_params :guid
 
-  menu label: "Gruppe"
+  menu label: "Development_group"
 
-  index :title => "Gruppe" do
+  index :title => "Development_group" do
     column :guid
     column :created_at
     column :updated_at

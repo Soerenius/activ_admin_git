@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_02_114607) do
+ActiveRecord::Schema.define(version: 2019_12_03_132959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,24 @@ ActiveRecord::Schema.define(version: 2019_12_02_114607) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "foldobjects", primary_key: "guid", id: :string, force: :cascade do |t|
+    t.string "name"
+    t.string "versiondate"
+    t.string "versionid"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "groups", primary_key: "guid", id: :string, force: :cascade do |t|
+    t.string "name"
+    t.string "versiondate"
+    t.string "versionid"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "object_tables", primary_key: "guid", id: :string, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -77,4 +95,15 @@ ActiveRecord::Schema.define(version: 2019_12_02_114607) do
   add_foreign_key "object_tables", "root_tables", column: "guid", primary_key: "guid"
   add_foreign_key "relassigncollections", "collections", column: "guid_relcollection", primary_key: "guid"
   add_foreign_key "relassigncollections", "object_tables", column: "guid_relobject", primary_key: "guid"
+
+  create_view "fachobjekt_views", sql_definition: <<-SQL
+      SELECT r.guid,
+      r.name,
+      r.versiondate,
+      r.versionid,
+      r.description
+     FROM root_tables r,
+      object_tables o
+    WHERE ((r.guid)::text = (o.guid)::text);
+  SQL
 end

@@ -56,3 +56,5 @@ gem 'inherited_resources', github: 'activeadmin/inherited_resources'
 gem 'devise'
 
 gem 'ransack'
+
+gem 'scenic'

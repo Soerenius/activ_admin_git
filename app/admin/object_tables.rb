@@ -1,9 +1,9 @@
 ActiveAdmin.register ObjectTable do
   permit_params :guid, :name
 
-  menu label: "Klasse"
+  menu label: "Development_Object"
 
-  index :title => "Klasse" do
+  index :title => "Development_Object" do
     column :guid
     #column RootTable.find(:'35562037-49f0-4ef0-87c7-b3bc255aaafd').name
     column :name
