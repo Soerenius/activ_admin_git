@@ -1,7 +1,7 @@
 ActiveAdmin.register RootTable do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
   
-  menu label: "Gesamt"  
+  menu label: "Gesamt2"  
 
   #filter :"subscription_billing_plan_name" , :as => :select, :collection => RootTable.all.map(&:name)  
 
@@ -15,7 +15,7 @@ ActiveAdmin.register RootTable do
   filter :updated_at, label: 'updated_at', as: :date_range
 
   index :title => "Gesamt" do
-    column :guid
+    #column :guid
     column :name
     column :versiondate
     column :versionid
