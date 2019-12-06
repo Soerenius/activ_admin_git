@@ -1,4 +1,4 @@
-ActiveAdmin.register RootTable do
+ActiveAdmin.register RootTable, as: 'Gesamt' do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
   
   menu label: "Gesamt" 
@@ -15,7 +15,7 @@ ActiveAdmin.register RootTable do
   filter :updated_at, label: 'updated_at', as: :date_range
 
   index :title => "Gesamt"do
-    #column :guid
+    column :guid
     column :name
     column :versiondate
     column :versionid
@@ -27,10 +27,10 @@ ActiveAdmin.register RootTable do
 
   form do |f|
 
-    if root_table.id == nil
+    if gesamt.id == nil
       $uuid=SecureRandom.uuid 
     else
-      $uuid=RootTable.find(root_table.id).guid
+      $uuid=RootTable.find(gesamt.id).guid
     end
     
     f.object.guid = $uuid 
@@ -47,6 +47,12 @@ ActiveAdmin.register RootTable do
       f.input :description
       f.input :created_at
       f.input :updated_at
+      f.select :collection, ["Einfriedung", "82fead4f-0bc6-4467-b15f-2f1590c6c1c4", "Rohrleitung"], :prompt => 'Zuordnung Gruppe. '
+      f.input :collection, as: :select, :collection => RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").select(:name).uniq
+
+      #f.has_many :collections do |s|
+      #  s.input :collection, :label =>'Gruppe', :as => select, :multiple => false, :collection => Collection.all.map { |c| ["#{c.keyword.word.capitalize}", c.id] }
+      #end
     end
     f.actions    
   end
@@ -58,11 +64,25 @@ ActiveAdmin.register RootTable do
     def update_object(guid)
       if params[:root_table][:art] == 'Fachobjekt'
         ObjectTable.create(:guid => $uuid)  
+        @chosen = params[:root_table][:collection]
+        #raise @chosen.inspect
+        @ruid = SecureRandom.uuid 
+        #raise @ruid.inspect
+        @guidvalue = $uuid
+        #raise @guidvalue.inspect
+        RootTable.create(:guid=>@ruid, :name=>'relationship')
+        Relationship.create(:guid=>@ruid) 
+        Relassigncollection.create(:guid=>@ruid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen) 
       elsif params[:root_table][:art] == 'Gruppe'
         Collection.create(:guid => $uuid) 
      # elsif params[:root_table][:art] == 'Externes Dokument'
       end
     end
+
+    #if params[:collection1].values[0] != "" && params[:root_table][:art] == 'Fachobjekt'
+    #  @chosen = params[:collection1].values[0]
+    #  raise @chosen.inspect
+    #end
   end  
 
   #show do 

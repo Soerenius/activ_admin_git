@@ -1,10 +1,10 @@
-ActiveAdmin.register Group do
+ActiveAdmin.register Group, as: 'Group' do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
 
   menu label: "Gruppe" 
 
   index :title => "Gruppe" do
-    #column :guid
+    column :guid
     column :name
     column :versiondate
     column :versionid
@@ -19,7 +19,7 @@ ActiveAdmin.register Group do
     if group.id == nil
       $uuid=SecureRandom.uuid 
     else
-      $uuid=RootTable.find(root_table.id).guid
+      $uuid=RootTable.find(group.id).guid
     end
 
     f.object.guid = $uuid 

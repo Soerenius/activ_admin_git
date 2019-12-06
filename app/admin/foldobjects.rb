@@ -1,10 +1,10 @@
-ActiveAdmin.register Foldobject do
+ActiveAdmin.register Foldobject, as: 'Object' do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
 
   menu label: "Klasse" 
 
   index :title => "Klasse" do
-    #column :guid
+    column :guid
     column :name
     column :versiondate
     column :versionid
@@ -16,10 +16,10 @@ ActiveAdmin.register Foldobject do
 
   form do |f|
 
-    if foldobject.id == nil
+    if object.id == nil
       $uuid=SecureRandom.uuid 
     else
-      $uuid=RootTable.find(root_table.id).guid
+      $uuid=RootTable.find(object.id).guid
     end
 
     f.object.guid = $uuid 

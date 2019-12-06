@@ -1,7 +1,8 @@
 class RootTable < ApplicationRecord
     self.primary_key='guid'
-    has_one :object_table, autosave: true, foreign_key: 'guid', dependent: :delete
-    has_one :collection, autosave: true, foreign_key: 'guid', dependent: :delete
+    has_one :object_table, autosave: true, foreign_key: 'guid', dependent: :destroy
+    has_one :collection, autosave: true, foreign_key: 'guid', dependent: :destroy
+    has_one :relationship, autosave: true, foreign_key: 'guid', dependent: :destroy
     #after_save :update_object
     has_one :art, foreign_key: 'id'
     
