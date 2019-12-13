@@ -1,7 +1,8 @@
 ActiveAdmin.register Collection do
   permit_params :guid
 
-  menu label: "Development_group"
+  #menu label: "Development_group"
+  menu false 
 
   index :title => "Development_group" do
     column :guid

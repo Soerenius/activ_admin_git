@@ -1,7 +1,8 @@
 ActiveAdmin.register ObjectTable do
   permit_params :guid, :name
 
-  menu label: "Development_Object"
+  #menu label: "Development_Object"
+  menu false 
 
   index :title => "Development_Object" do
     column :guid
