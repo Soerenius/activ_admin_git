@@ -13,3 +13,18 @@
  *= require_tree .
  *= require_self
  */
+
+ .externaldocument1 {
+    text-align :right;
+}
+.collection1 {
+    text-align :right;
+}
+
+h1{
+    font-size: 60px;
+    color: rgb(0, 76, 148);
+    background-size: 80px;
+    font-family: 'Open+Sans', sans-serif;
+ }
+

@@ -1,5 +1,5 @@
 ActiveAdmin.register RootTable, as: 'Gesamt' do
-  permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
+  permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at, :gruppen #, :art, :collection1, :externaldocument1
   
   menu label: "Gesamt" 
 
@@ -22,7 +22,8 @@ ActiveAdmin.register RootTable, as: 'Gesamt' do
     column :description
     column :created_at
     column :updated_at
-    actions
+    column :gruppen
+    actions #:all, :except => [:edit, :destroy]
   end
 
   form do |f|
@@ -40,19 +41,31 @@ ActiveAdmin.register RootTable, as: 'Gesamt' do
     f.object.updated_at = DateTime.now
     f.inputs do
       f.select :art, ["Fachobjekt", "Gruppe", "Externes Dokument"], :prompt => 'Bitte wählen! '
+      #f.input :art, as: :select, :include_blank => "Bitte wählen!", label: 'art', :collection => ["Fachobjekt", "Gruppe", "Externes Dokument"]
+      #f.input :art, as: :select, :include_blank => "Bitte wählen!", :label => 'art', :collection => ["Fachobjekt", "Gruppe", "Externes Dokument"]
       f.input :guid, :input_html => { :readonly => true }
-      f.input :name
+      f.input :name #, :input_html => { :class => 'name' }
       f.input :versiondate
       f.input :versionid
       f.input :description
       f.input :created_at
       f.input :updated_at
-      f.select :collection, ["Einfriedung", "82fead4f-0bc6-4467-b15f-2f1590c6c1c4", "Rohrleitung"], :prompt => 'Zuordnung Gruppe. '
-      f.input :collection, as: :select, :collection => RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").select(:name).uniq
+      #f.select :collection, ["Einfriedung", "82fead4f-0bc6-4467-b15f-2f1590c6c1c4", "Rohrleitung"], :prompt => 'Zuordnung Gruppe. '
+      #f.input :collection1, as: :select, :include_blank => "Keine Zuordnung.", :collection => 
+      #RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").select(:name).uniq
+      f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
+      .select(:name).uniq, {:include_blank => "Gruppe: Keine Zuordnung."}
+      #externaldocument
+      #f.template.concat "<h1>Your Ad Here</h1>".html_safe
+      
+      f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
+      .select(:name).uniq, {:include_blank => "Dokument: Keine Zuordnung."}
+      #f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
+      #.select(:name).uniq, {:include_blank => "Keine Zuordnung.", :label => 'art'}
+      #f.select :externaldocument, :abc => RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").select(:name).uniq#, {:include_blank => true}
+      #f.input :externaldocument, as: :select, :include_blank => "Bitte wählen!", :collection => 
+      #RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").select(:name).uniq
 
-      #f.has_many :collections do |s|
-      #  s.input :collection, :label =>'Gruppe', :as => select, :multiple => false, :collection => Collection.all.map { |c| ["#{c.keyword.word.capitalize}", c.id] }
-      #end
     end
     f.actions    
   end
@@ -61,32 +74,39 @@ ActiveAdmin.register RootTable, as: 'Gesamt' do
     
     after_save :update_object
   
-    def update_object(guid)
-      if params[:root_table][:art] == 'Fachobjekt'
-        ObjectTable.create(:guid => $uuid)  
-        @chosen = params[:root_table][:collection]
-        #raise @chosen.inspect
-        @ruid = SecureRandom.uuid 
-        #raise @ruid.inspect
-        @guidvalue = $uuid
-        #raise @guidvalue.inspect
-        RootTable.create(:guid=>@ruid, :name=>'relationship')
-        Relationship.create(:guid=>@ruid) 
-        Relassigncollection.create(:guid=>@ruid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen) 
+    def update_object(guid)      
+      #binding.pry
+      #if params[:root_table][:art]  == 'Fachobjekt' #&& params[:root_table][:collection1] != ''
+      if params[:root_table][:art]  == 'Fachobjekt' #&& params[:root_table][:collection1] != ''
+        ObjectTable.create(:guid => $uuid)
       elsif params[:root_table][:art] == 'Gruppe'
         Collection.create(:guid => $uuid) 
-     # elsif params[:root_table][:art] == 'Externes Dokument'
+      elsif params[:root_table][:art] == 'Externes Dokument'
+        Externaldocument.create(:guid => $uuid) 
+      end
+      if params[:root_table][:collection1] != ''
+        @chosen = params[:root_table][:collection1]
+        @chosen_uuid = RootTable.where(name: @chosen).ids[0]
+        @ruid = SecureRandom.uuid 
+        @guidvalue = $uuid
+        #raise @guidvalue.inspect 
+        RootTable.create(:guid=>@ruid, :name=>'relationship')
+        Relationship.create(:guid=>@ruid) 
+        Relassigncollection.create(:guid=>@ruid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
+      end
+      if params[:root_table][:externaldocument1] != ''
+        @chosen = params[:root_table][:externaldocument1]
+        @chosen_uuid = RootTable.where(name: @chosen).ids[0]
+        @ruid = SecureRandom.uuid 
+        @guidvalue = $uuid
+        RootTable.create(:guid=>@ruid, :name=>'relationship')
+        Relationship.create(:guid=>@ruid) 
+        Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
       end
     end
-
-    #if params[:collection1].values[0] != "" && params[:root_table][:art] == 'Fachobjekt'
-    #  @chosen = params[:collection1].values[0]
-    #  raise @chosen.inspect
-    #end
   end  
 
-  #show do 
-  #  root_table :guid, :name
-  #  active_admin_comments
+  #show do
+  #  root_table.name
   #end
 end

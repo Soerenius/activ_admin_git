@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_06_084257) do
+ActiveRecord::Schema.define(version: 2019_12_12_125112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,7 +47,23 @@ ActiveRecord::Schema.define(version: 2019_12_06_084257) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "collection1s", force: :cascade do |t|
+    t.string "collection1s"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "collections", primary_key: "guid", id: :string, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "externaldocument1s", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "externaldocuments", primary_key: "guid", id: :string, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -87,6 +103,13 @@ ActiveRecord::Schema.define(version: 2019_12_06_084257) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "reldocuments", primary_key: "guid", id: :string, force: :cascade do |t|
+    t.string "guid_reldocument"
+    t.string "guid_relroot"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "root_tables", primary_key: "guid", id: :string, force: :cascade do |t|
     t.string "name"
     t.string "versiondate"
@@ -97,9 +120,12 @@ ActiveRecord::Schema.define(version: 2019_12_06_084257) do
   end
 
   add_foreign_key "collections", "root_tables", column: "guid", primary_key: "guid"
+  add_foreign_key "externaldocuments", "root_tables", column: "guid", primary_key: "guid"
   add_foreign_key "object_tables", "root_tables", column: "guid", primary_key: "guid"
   add_foreign_key "relassigncollections", "collections", column: "guid_relcollection", primary_key: "guid"
   add_foreign_key "relassigncollections", "object_tables", column: "guid_relobject", primary_key: "guid"
+  add_foreign_key "reldocuments", "externaldocuments", column: "guid_reldocument", primary_key: "guid"
+  add_foreign_key "reldocuments", "root_tables", column: "guid_relroot", primary_key: "guid"
 
   create_view "fachobjekt_views", sql_definition: <<-SQL
       SELECT r.guid,

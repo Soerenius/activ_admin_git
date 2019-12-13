@@ -58,3 +58,5 @@ gem 'devise'
 gem 'ransack'
 
 gem 'scenic'
+
+gem 'pry-rails' 

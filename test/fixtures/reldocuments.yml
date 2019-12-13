@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  guid: MyString
+  guid_reldocument: MyString
+  guid_relroot: MyString
+
+two:
+  guid: MyString
+  guid_reldocument: MyString
+  guid_relroot: MyString
