@@ -86,7 +86,7 @@ ActiveAdmin.register RootTable, as: 'Gesamt' do
       end
       if params[:root_table][:collection1] != ''
         @chosen = params[:root_table][:collection1]
-        @chosen_uuid = RootTable.where(name: @chosen).ids[0]
+        @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
         @guidvalue = $uuid
         #raise @guidvalue.inspect 
@@ -96,7 +96,7 @@ ActiveAdmin.register RootTable, as: 'Gesamt' do
       end
       if params[:root_table][:externaldocument1] != ''
         @chosen = params[:root_table][:externaldocument1]
-        @chosen_uuid = RootTable.where(name: @chosen).ids[0]
+        @chosen_uuid = RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
         @guidvalue = $uuid
         RootTable.create(:guid=>@ruid, :name=>'relationship')
