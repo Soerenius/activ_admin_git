@@ -1,9 +1,9 @@
-ActiveAdmin.register Group, as: 'Group' do
+ActiveAdmin.register Document do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
 
-  menu label: "Gruppe" 
+  menu label: "Dokumente" 
 
-  index :title => "Gruppe" do
+  index :title => "Dokumente" do
     #column :guid
     column :name
     column :versiondate
@@ -11,33 +11,23 @@ ActiveAdmin.register Group, as: 'Group' do
     column :description
     column :created_at
     column :updated_at
-    column :fachobjekte do |f|      
-
-      RootTable.select("r1.*").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
-      .where("r1.guid=o.guid AND o.guid=rac.guid_relObject AND rac.guid_relCollection=c.guid AND r2.guid=c.guid AND r2.guid='" + f.guid + "'")
-
-    end
-    column :gruppen do |c|      
-
+    column :gruppen do |c|   
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, relcollects rc, collections c")
       .where("r1.guid=rc.guid_relroot AND rc.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
-
     end
-    column :dokumente do |d|      
-
+    column :dokumente do |d|  
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
       .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
-
     end
     actions
   end  
 
   form do |f|
 
-    if group.id == nil
+    if document.id == nil
       $uuid=SecureRandom.uuid 
     else
-      $uuid=RootTable.find(group.id).guid
+      $uuid=RootTable.find(document.id).guid
     end
 
     f.object.guid = $uuid 
@@ -54,35 +44,23 @@ ActiveAdmin.register Group, as: 'Group' do
       #f.input :created_at
       #f.input :updated_at
       f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
-      .select(:name).uniq, {:include_blank => "Gruppe 1: Keine Zuordnung."}
-      f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
-      .select(:name).uniq, {:include_blank => "Gruppe 2: Keine Zuordnung."}
+      .select(:name).uniq, {:include_blank => "Gruppe: Keine Zuordnung."}
       f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
-      .select(:name).uniq, {:include_blank => "Dokument 1: Keine Zuordnung."}
-      f.select :externaldocument2, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
-      .select(:name).uniq, {:include_blank => "Dokument 2: Keine Zuordnung."}
-
-      
+      .select(:name).uniq, {:include_blank => "Dokument: Keine Zuordnung."}
     end
-
     f.actions    
   end
 
   controller do
     
     def scoped_collection
-      RootTable.joins(:collection).where("root_tables.guid=collections.guid")
+      RootTable.joins(:externaldocument).where("root_tables.guid=externaldocuments.guid")
     end
 
     after_save :update_object
   
     def update_object(guid)
-      if Collection.exists?(:guid => $uuid)
-
-      else
-        Collection.create(:guid => $uuid)
-      end
-
+      Externaldocument.create(:guid => $uuid)
 
       if params[:group][:collection1] != ''
         @chosen = params[:group][:collection1]
@@ -92,27 +70,9 @@ ActiveAdmin.register Group, as: 'Group' do
         #raise @guidvalue.inspect 
         RootTable.create(:guid=>@ruid, :name=>'relationship')
         Relationship.create(:guid=>@ruid) 
-        Relcollect.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
-      end
-      if params[:group][:collection2] != ''
-        @chosen = params[:group][:collection1]
-        @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
-        @ruid = SecureRandom.uuid 
-        @guidvalue = $uuid
-        RootTable.create(:guid=>@ruid, :name=>'relationship')
-        Relationship.create(:guid=>@ruid) 
-        Relcollect.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
+        Relassigncollection.create(:guid=>@ruid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
       end
       if params[:group][:externaldocument1] != ''
-        @chosen = params[:group][:externaldocument1]
-        @chosen_uuid = RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").where(name: @chosen).ids[0]
-        @ruid = SecureRandom.uuid 
-        @guidvalue = $uuid
-        RootTable.create(:guid=>@ruid, :name=>'relationship')
-        Relationship.create(:guid=>@ruid) 
-        Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
-      end
-      if params[:group][:externaldocument2] != ''
         @chosen = params[:group][:externaldocument1]
         @chosen_uuid = RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
@@ -137,11 +97,10 @@ ActiveAdmin.register Group, as: 'Group' do
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, relcollects rc, collections c")
       .where("r1.guid=rc.guid_relroot AND rc.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
       end
-      row :dokumente do |d|      
-
+      row :dokumente do |d|  
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
-        .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")  
+        .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
       end
     end
-  end
+  end  
 end

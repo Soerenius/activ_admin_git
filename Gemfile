@@ -60,3 +60,5 @@ gem 'ransack'
 gem 'scenic'
 
 gem 'pry-rails' 
+
+#gem 'rack', github: 'rack/rack'

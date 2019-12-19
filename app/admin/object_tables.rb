@@ -38,6 +38,9 @@ ActiveAdmin.register ObjectTable do
   end
 
   controller do
+    def scoped_collection
+      super.includes :root_table # prevents N+1 queries to your database
+    end
     #$uname = RootTable.find('35562037-49f0-4ef0-87c7-b3bc255aaafd').name
     #object.name = $uname
     #inputs do
