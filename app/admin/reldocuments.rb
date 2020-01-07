@@ -10,7 +10,7 @@ ActiveAdmin.register Reldocument do
   #filter :document_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Dokument'#, :collection =>  RootTable.find(:guid_relroot) 
   filter :externaldocument_root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Dokument'#, :collection =>  RootTable.find(:guid_relroot) 
 
-
+  scope :all, :default => true
 
   index :title => "Zugeord. Dokumente" do
     #column "guid", :guid

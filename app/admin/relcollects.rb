@@ -8,6 +8,7 @@ ActiveAdmin.register Relcollect do
   filter :root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Objekt'#, :collection =>  RootTable.find(:guid_relroot) 
   filter :collection_root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Dokument'#, :collection =>  RootTable.find(:guid_relroot) 
 
+  scope :all, :default => true
 
   index :title => "Zugeord. Gruppen" do
     #column "guid", :guid
