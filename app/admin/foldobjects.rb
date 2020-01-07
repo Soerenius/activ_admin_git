@@ -86,24 +86,32 @@ ActiveAdmin.register Foldobject, as: 'Object' do
       end      
 
       if params[:foldobject][:collection1] != ''
-        @chosen = params[:foldobject][:collection1]
+        @chosen = params[:root_table][:collection1]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
-        @ruid = SecureRandom.uuid 
+        @racuid = SecureRandom.uuid 
+        @rcuid = SecureRandom.uuid 
         @guidvalue = $uuid
         #raise @guidvalue.inspect 
-        RootTable.create(:guid=>@ruid, :name=>'relationship')
-        Relationship.create(:guid=>@ruid) 
-        Relassigncollection.create(:guid=>@ruid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
+        RootTable.create(:guid=>@racuid, :name=>'relationship')
+        RootTable.create(:guid=>@rcuid, :name=>'relationship')
+        Relationship.create(:guid=>@racuid) 
+        Relationship.create(:guid=>@rcuid) 
+        Relassigncollection.create(:guid=>@racuid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
+        Relcollect.create(:guid=>@rcuid,:guid_relroot=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
       end
       if params[:foldobject][:collection2] != ''
-        @chosen = params[:foldobject][:collection2]
+        @chosen = params[:root_table][:collection2]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
-        @ruid = SecureRandom.uuid 
+        @racuid = SecureRandom.uuid 
+        @rcuid = SecureRandom.uuid 
         @guidvalue = $uuid
         #raise @guidvalue.inspect 
-        RootTable.create(:guid=>@ruid, :name=>'relationship')
-        Relationship.create(:guid=>@ruid) 
-        Relassigncollection.create(:guid=>@ruid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
+        RootTable.create(:guid=>@racuid, :name=>'relationship')
+        RootTable.create(:guid=>@rcuid, :name=>'relationship')
+        Relationship.create(:guid=>@racuid) 
+        Relationship.create(:guid=>@rcuid) 
+        Relassigncollection.create(:guid=>@racuid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
+        Relcollect.create(:guid=>@rcuid,:guid_relroot=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
       end
       if params[:foldobject][:externaldocument1] != ''
         @chosen = params[:foldobject][:externaldocument1]
