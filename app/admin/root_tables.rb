@@ -1,4 +1,4 @@
-ActiveAdmin.register RootTable, as: 'Gesamt' do
+ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at, :gruppen, :collections, :relcollects 
   
   menu label: "Gesamt" 

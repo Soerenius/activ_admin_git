@@ -1,4 +1,4 @@
-ActiveAdmin.register Foldobject, as: 'Object' do
+ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
 
   menu label: "Klasse" 
@@ -55,15 +55,15 @@ ActiveAdmin.register Foldobject, as: 'Object' do
       f.input :description
       #f.input :created_at
       #f.input :updated_at
-      f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
+      f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid ORDER BY root_tables.name")
       .select(:name).uniq, {:include_blank => "Gruppe 1: Keine Zuordnung."}
       simple_format('<p>f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
       .select(:name).uniq, {:include_blank => "Gruppe 1: Keine Zuordnung."}</p>')
-      f.select :collection2, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
+      f.select :collection2, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid ORDER BY root_tables.name")
       .select(:name).uniq, {:include_blank => "Gruppe 2: Keine Zuordnung."}
-      f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
+      f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid ORDER BY root_tables.name")
       .select(:name).uniq, {:include_blank => "Dokument 1: Keine Zuordnung."}
-      f.select :externaldocument2, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
+      f.select :externaldocument2, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid ORDER BY root_tables.name")
       .select(:name).uniq, {:include_blank => "Dokument 2: Keine Zuordnung."}
     end
     f.actions  
@@ -83,7 +83,9 @@ ActiveAdmin.register Foldobject, as: 'Object' do
         
       else
         ObjectTable.create(:guid => $uuid)
-      end      
+      end   
+
+      $objektname=RootTable.find($uuid).name
 
       if params[:foldobject][:collection1] != ''
         @chosen = params[:foldobject][:collection1]
@@ -92,8 +94,8 @@ ActiveAdmin.register Foldobject, as: 'Object' do
         @rcuid = SecureRandom.uuid 
         @guidvalue = $uuid
         #raise @guidvalue.inspect 
-        RootTable.create(:guid=>@racuid, :name=>'relationship')
-        RootTable.create(:guid=>@rcuid, :name=>'relationship')
+        RootTable.create(:guid=>@racuid, :name=> 'Beziehung "' + $objektname + '" zu "' + @chosen + '". ')
+        RootTable.create(:guid=>@rcuid, :name=> 'Beziehung "' + $objektname + '" zu "' + @chosen + '". ')
         Relationship.create(:guid=>@racuid) 
         Relationship.create(:guid=>@rcuid) 
         Relassigncollection.create(:guid=>@racuid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
@@ -106,8 +108,8 @@ ActiveAdmin.register Foldobject, as: 'Object' do
         @rcuid = SecureRandom.uuid 
         @guidvalue = $uuid
         #raise @guidvalue.inspect 
-        RootTable.create(:guid=>@racuid, :name=>'relationship')
-        RootTable.create(:guid=>@rcuid, :name=>'relationship')
+        RootTable.create(:guid=>@racuid, :name=> 'Beziehung "' + $objektname + '" zu "' + @chosen + '". ')
+        RootTable.create(:guid=>@rcuid, :name=> 'Beziehung "' + $objektname + '" zu "' + @chosen + '". ')
         Relationship.create(:guid=>@racuid) 
         Relationship.create(:guid=>@rcuid) 
         Relassigncollection.create(:guid=>@racuid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
@@ -118,7 +120,7 @@ ActiveAdmin.register Foldobject, as: 'Object' do
         @chosen_uuid = RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
         @guidvalue = $uuid
-        RootTable.create(:guid=>@ruid, :name=>'relationship')
+        RootTable.create(:guid=>@ruid, :name=> 'Beziehung "' + $objektname + '" zu "' + @chosen + '". ')
         Relationship.create(:guid=>@ruid) 
         Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
       end
@@ -127,7 +129,7 @@ ActiveAdmin.register Foldobject, as: 'Object' do
         @chosen_uuid = RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
         @guidvalue = $uuid
-        RootTable.create(:guid=>@ruid, :name=>'relationship')
+        RootTable.create(:guid=>@ruid, :name=> 'Beziehung "' + $objektname + '" zu "' + @chosen + '". ')
         Relationship.create(:guid=>@ruid) 
         Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
       end

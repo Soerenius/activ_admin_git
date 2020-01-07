@@ -1,4 +1,4 @@
-ActiveAdmin.register Relcollect do
+ActiveAdmin.register Relcollect, { :sort_order => 'root_tables.name' } do
   permit_params :guid, :guid_relroot, :guid_relcollection, :guid_typecollection, :root_table, :collection, :relationship
 
   actions :all, :except => [:new, :edit]
@@ -15,7 +15,7 @@ ActiveAdmin.register Relcollect do
     column "Objekt", sortable: 'root_tables.name' do |r|
       RootTable.find(r.guid_relroot)
     end
-    column "Gruppe", sortable: 'root_tables.name' do |m|#, :collection 
+    column "Gruppe" do |m|#, :collection , sortable: 'root_tables.name'
       RootTable.find(m.guid_relcollection)
     end
     #column :guid_relcollection

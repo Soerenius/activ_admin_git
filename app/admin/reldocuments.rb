@@ -1,4 +1,4 @@
-ActiveAdmin.register Reldocument do
+ActiveAdmin.register Reldocument, { :sort_order => 'root_tables.name_asc' } do
   permit_params :guid, :guid_relroot, :guid_reldocument
 
   actions :all, :except => [:new, :edit]
@@ -19,7 +19,7 @@ ActiveAdmin.register Reldocument do
     column "Objekt", sortable: 'root_tables.name' do |r|
       RootTable.find(r.guid_relroot)
     end
-    column "Dokument", sortable: 'root_tables.name' do |m|#, :collection 
+    column "Dokument" do |m|#, :collection , sortable: 'root_tables.name'
       RootTable.find(m.guid_reldocument)
     end
     #column :guid_reldocument

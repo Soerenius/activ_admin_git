@@ -1,4 +1,4 @@
-ActiveAdmin.register Relassigncollection do
+ActiveAdmin.register Relassigncollection, { :sort_order => 'root_tables.name' } do
   permit_params :guid, :guid_relobject, :guid_relcollection, :created_at, :updated_at
 
   actions :all, :except => [:new, :edit]
@@ -11,7 +11,7 @@ ActiveAdmin.register Relassigncollection do
 
   index :title => "Zugeord. Fachobjekte" do
     #column "guid", :guid
-    column "Fachobjekt" do |r| #, sortable: 'object_tables.root_tables.name'
+    column "Fachobjekt", sortable: 'root_tables.name' do |r| #, sortable: 'object_tables.root_tables.name'
       RootTable.find(r.guid_relobject)
     end
     column "Gruppe" do |m|#, :collection , sortable: 'object_tables.root_tables.name'
@@ -26,7 +26,7 @@ ActiveAdmin.register Relassigncollection do
     def scoped_collection
       super.includes(:object_table) # prevents N+1 queries to your database
 
-      #super.includes(:root_table) # prevents N+1 queries to your database
+      super.includes(:root_table) # prevents N+1 queries to your database
     end
   end
 end
