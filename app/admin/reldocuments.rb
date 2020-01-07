@@ -29,7 +29,7 @@ ActiveAdmin.register Reldocument do
 
   controller do
     def scoped_collection
-      super.includes :root_table # prevents N+1 queries to your database
+      super.includes(:root_table).references(:root_table) # prevents N+1 queries to your database
     end
   end
   
