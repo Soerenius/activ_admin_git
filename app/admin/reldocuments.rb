@@ -19,10 +19,10 @@ ActiveAdmin.register Reldocument do
     column "Objekt", sortable: 'root_tables.name' do |r|
       RootTable.find(r.guid_relroot)
     end
-    #column "Dokument", sortable: 'root_tables.name' do |m|#, :collection 
-    #  RootTable.find(m.guid_reldocument)
-    #end
-    column :guid_reldocument
+    column "Dokument", sortable: 'root_tables.name' do |m|#, :collection 
+      RootTable.find(m.guid_reldocument)
+    end
+    #column :guid_reldocument
     column :created_at
     column :updated_at
 
