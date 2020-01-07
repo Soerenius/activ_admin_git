@@ -86,7 +86,7 @@ ActiveAdmin.register Foldobject, as: 'Object' do
       end      
 
       if params[:foldobject][:collection1] != ''
-        @chosen = params[:root_table][:collection1]
+        @chosen = params[:foldobject][:collection1]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
         @racuid = SecureRandom.uuid 
         @rcuid = SecureRandom.uuid 
@@ -100,7 +100,7 @@ ActiveAdmin.register Foldobject, as: 'Object' do
         Relcollect.create(:guid=>@rcuid,:guid_relroot=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
       end
       if params[:foldobject][:collection2] != ''
-        @chosen = params[:root_table][:collection2]
+        @chosen = params[:foldobject][:collection2]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
         @racuid = SecureRandom.uuid 
         @rcuid = SecureRandom.uuid 

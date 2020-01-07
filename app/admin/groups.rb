@@ -55,7 +55,7 @@ ActiveAdmin.register Group, as: 'Group' do
       #f.input :updated_at
       f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
       .select(:name).uniq, {:include_blank => "Gruppe 1: Keine Zuordnung."}
-      f.select :collection1, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
+      f.select :collection2, RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid")
       .select(:name).uniq, {:include_blank => "Gruppe 2: Keine Zuordnung."}
       f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
       .select(:name).uniq, {:include_blank => "Dokument 1: Keine Zuordnung."}
@@ -87,6 +87,7 @@ ActiveAdmin.register Group, as: 'Group' do
       if params[:group][:collection1] != ''
         @chosen = params[:group][:collection1]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
+        #raise @chosen.inspect
         @ruid = SecureRandom.uuid 
         @guidvalue = $uuid
         #raise @guidvalue.inspect 
@@ -95,7 +96,7 @@ ActiveAdmin.register Group, as: 'Group' do
         Relcollect.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
       end
       if params[:group][:collection2] != ''
-        @chosen = params[:group][:collection1]
+        @chosen = params[:group][:collection2]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
         @guidvalue = $uuid
@@ -113,7 +114,7 @@ ActiveAdmin.register Group, as: 'Group' do
         Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
       end
       if params[:group][:externaldocument2] != ''
-        @chosen = params[:group][:externaldocument1]
+        @chosen = params[:group][:externaldocument2]
         @chosen_uuid = RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
         @guidvalue = $uuid

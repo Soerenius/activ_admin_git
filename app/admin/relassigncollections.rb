@@ -14,7 +14,7 @@ ActiveAdmin.register Relassigncollection do
     column "Fachobjekt" do |r| #, sortable: 'object_tables.root_tables.name'
       RootTable.find(r.guid_relobject)
     end
-    column "Gruppe" do |m|#, :collection 
+    column "Gruppe" do |m|#, :collection , sortable: 'object_tables.root_tables.name'
       RootTable.find(m.guid_relcollection)
     end
     column :created_at
@@ -24,9 +24,9 @@ ActiveAdmin.register Relassigncollection do
 
   controller do
     def scoped_collection
-      super.includes :object_table # prevents N+1 queries to your database
+      super.includes(:object_table) # prevents N+1 queries to your database
 
-      #super.includes :root_table # prevents N+1 queries to your database
+      #super.includes(:root_table) # prevents N+1 queries to your database
     end
   end
 end

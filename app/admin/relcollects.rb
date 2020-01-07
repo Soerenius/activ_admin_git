@@ -8,14 +8,14 @@ ActiveAdmin.register Relcollect do
   filter :root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Objekt'#, :collection =>  RootTable.find(:guid_relroot) 
   filter :collection_root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Dokument'#, :collection =>  RootTable.find(:guid_relroot) 
 
-  scope :all, :default => true
+  #scope :all, :default => true
 
   index :title => "Zugeord. Gruppen" do
     #column "guid", :guid
-    column "Objekt" do |r| #, sortable: 'root_tables.name'
+    column "Objekt", sortable: 'root_tables.name' do |r|
       RootTable.find(r.guid_relroot)
     end
-    column "Gruppe" do |m|#, :collection , sortable: 'root_tables.name'
+    column "Gruppe", sortable: 'root_tables.name' do |m|#, :collection 
       RootTable.find(m.guid_relcollection)
     end
     column :created_at
