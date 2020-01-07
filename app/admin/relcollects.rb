@@ -22,21 +22,9 @@ ActiveAdmin.register Relcollect do
     actions
   end
 
+=begin
   form do |f|
-    #if gesamt.id == nil
-    #  $uuid=SecureRandom.uuid 
-    #else
-    #  $uuid=RootTable.find(gesamt.id).guid
-    #end
 
-    $rela = SecureRandom.uuid 
-
-    if f.object.relationship == nil
-      
-      #f.object.relationship =  $rela
-    else
-      
-    end
     
     #f.object.guid = $uuid 
     #f.object.versiondate = DateTime.now
@@ -93,8 +81,10 @@ ActiveAdmin.register Relcollect do
     end
     f.actions    
   end
-
+=end
   controller do  
+
+=begin
     before_save :update_object
     after_destroy :destroy_relations
     before_destroy :before_destroy
@@ -113,6 +103,8 @@ ActiveAdmin.register Relcollect do
     #  @relcollect = Relcollect.new
     #  @relcollect.build_relationship
     #end
+
+=end
 
     def scoped_collection
       super.includes :root_table # prevents N+1 queries to your database
