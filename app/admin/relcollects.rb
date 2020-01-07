@@ -12,10 +12,10 @@ ActiveAdmin.register Relcollect do
 
   index :title => "Zugeord. Gruppen" do
     #column "guid", :guid
-    column "Objekt", sortable: 'root_tables.name' do |r|
+    column "Objekt" do |r| #, sortable: 'root_tables.name'
       RootTable.find(r.guid_relroot)
     end
-    column "Gruppe", sortable: 'root_tables.name' do |m|#, :collection 
+    column "Gruppe" do |m|#, :collection , sortable: 'root_tables.name'
       RootTable.find(m.guid_relcollection)
     end
     column :created_at
