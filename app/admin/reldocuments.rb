@@ -35,5 +35,13 @@ ActiveAdmin.register Reldocument, { :sort_order => 'root_tables.name_asc' } do
       end_of_association_chain.includes(:root_table).references(:root_table) # prevents N+1 queries to your database
     end
   end
+
+  csv do
+    column :guid
+    column :guid_relroot
+    column :guid_reldocument 
+    column :created_at
+    column :updated_at   
+  end
   
 end

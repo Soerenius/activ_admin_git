@@ -23,12 +23,14 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
 
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
       .where("r1.guid=o.guid AND o.guid=rac.guid_relobject AND rac.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")
 
     end
     column :dokumente do |d|      
 
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
       .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
+      .order("r2.name")
 
     end
     actions
@@ -134,10 +136,15 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
         Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
       end
     end    
-  end  
+  end 
+  
+  action_item :new_group, priority: 0, only: :show do
+    link_to 'Neues Fachobjekt', '/db/objects/new'
+  end
 
   show do
     attributes_table  do
+      row :guid
       row :name
       row :versiondate
       row :versionid
@@ -145,13 +152,40 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
       row :created_at
       row :updated_at
       row :gruppen do |c|
-        RootTable.select("r2.*").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
-      .where("r1.guid=o.guid AND o.guid=rac.guid_relobject AND rac.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")      
+        RootTable.select("STRING_AGG (r2.name, ',')").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
+      .where("r1.guid=o.guid AND o.guid=rac.guid_relobject AND rac.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")      
       end
       row :dokumente do |d|
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
-        .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")  
+        .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
+        .order("r2.name")  
       end
     end
+  end
+
+  csv do
+    column :guid
+    column :name
+    column :versiondate
+    column :versionid
+    column :description
+    column :created_at
+    column :updated_at
+    #column :string_agg
+    #column :fachobjekte do |f|
+      #RootTable.find(f.guid).name
+      #RootTable.select("r.name").from("root_tables r").where("r.guid=" + f.guid + "").name;
+
+    #  RootTable.select("STRING_AGG (r2.name, ',')").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
+    #  .where("r1.guid=o.guid AND o.guid=rac.guid_relObject AND rac.guid_relCollection=c.guid AND r2.guid=c.guid AND r1.guid='" + f.guid + "'")
+    #end
+
+
+    #( CREATE OR REPLACE VIEW fachobjekte_zu_gruppe_view AS
+    #  SELECT r1.guid as id, r1.name,STRING_AGG (r2.name, ',')
+    #  FROM root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c
+    #  WHERE r1.guid=o.guid AND o.guid=rac.guid_relObject AND rac.guid_relCollection=c.guid AND r2.guid=c.guid 
+    #  GROUP BY r1.name,r1.guid
   end
 end

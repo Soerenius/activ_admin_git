@@ -1,4 +1,4 @@
-ActiveAdmin.register Relassigncollection, { :sort_order => 'root_tables.name' } do
+ActiveAdmin.register Relassigncollection, { :sort_order => 'root_tables.name_asc' } do
   permit_params :guid, :guid_relobject, :guid_relcollection, :created_at, :updated_at
 
   actions :all, :except => [:new, :edit]
@@ -28,5 +28,13 @@ ActiveAdmin.register Relassigncollection, { :sort_order => 'root_tables.name' } 
 
       super.includes(:root_table) # prevents N+1 queries to your database
     end
+  end
+
+  csv do
+    column :guid
+    column :guid_relobject
+    column :guid_relcollection
+    column :created_at
+    column :updated_at   
   end
 end

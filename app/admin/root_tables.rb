@@ -180,4 +180,14 @@ ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
       end
     end
   end
+
+  csv do
+    column :guid
+    column :name
+    column :versiondate
+    column :versionid
+    column :description
+    column :created_at
+    column :updated_at
+  end
 end

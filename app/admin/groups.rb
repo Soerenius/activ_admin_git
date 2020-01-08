@@ -15,18 +15,21 @@ ActiveAdmin.register Group, { :sort_order => :name_asc, as: 'Group'  }do
 
       RootTable.select("r1.*").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
       .where("r1.guid=o.guid AND o.guid=rac.guid_relObject AND rac.guid_relCollection=c.guid AND r2.guid=c.guid AND r2.guid='" + f.guid + "'")
+      .order("r1.name")
 
     end
     column :gruppen do |c|      
 
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, relcollects rc, collections c")
       .where("r1.guid=rc.guid_relroot AND rc.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")
 
     end
     column :dokumente do |d|      
 
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
       .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
+      .order("r2.name")
 
     end
     actions
@@ -126,9 +129,14 @@ ActiveAdmin.register Group, { :sort_order => :name_asc, as: 'Group'  }do
     end
     
   end 
+
+  action_item :new_group, priority: 0, only: :show do
+    link_to 'Neue Gruppe', '/db/groups/new'
+  end
   
   show do
     attributes_table  do
+      row :guid
       row :name
       row :versiondate
       row :versionid
@@ -138,12 +146,24 @@ ActiveAdmin.register Group, { :sort_order => :name_asc, as: 'Group'  }do
       row :gruppen do |c|
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, relcollects rc, collections c")
       .where("r1.guid=rc.guid_relroot AND rc.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")
       end
       row :dokumente do |d|      
 
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
         .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")  
+        .order("r2.name")
       end
     end
+  end
+
+  csv do
+    column :guid
+    column :name
+    column :versiondate
+    column :versionid
+    column :description
+    column :created_at
+    column :updated_at
   end
 end

@@ -14,10 +14,12 @@ ActiveAdmin.register Document do
     column :gruppen do |c|   
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, relcollects rc, collections c")
       .where("r1.guid=rc.guid_relroot AND rc.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")
     end
     column :dokumente do |d|  
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
       .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
+      .order("r2.name")
     end
     actions
   end  
@@ -62,7 +64,7 @@ ActiveAdmin.register Document do
     def update_object(guid)
       Externaldocument.create(:guid => $uuid)
 
-      if params[:group][:collection1] != ''
+      if params[:document][:collection1] != ''
         @chosen = params[:group][:collection1]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
@@ -72,7 +74,7 @@ ActiveAdmin.register Document do
         Relationship.create(:guid=>@ruid) 
         Relassigncollection.create(:guid=>@ruid,:guid_relobject=>@guidvalue,:guid_relcollection=>@chosen_uuid) 
       end
-      if params[:group][:externaldocument1] != ''
+      if params[:document][:externaldocument1] != ''
         @chosen = params[:group][:externaldocument1]
         @chosen_uuid = RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid").where(name: @chosen).ids[0]
         @ruid = SecureRandom.uuid 
@@ -81,9 +83,12 @@ ActiveAdmin.register Document do
         Relationship.create(:guid=>@ruid) 
         Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
       end
-    end
-    
+    end    
   end 
+
+  action_item :new_group, priority: 0, only: :show do
+    link_to 'Neues Dokument', '/db/documents/new'
+  end
   
   show do
     attributes_table  do
@@ -96,10 +101,12 @@ ActiveAdmin.register Document do
       row :gruppen do |c|
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, relcollects rc, collections c")
       .where("r1.guid=rc.guid_relroot AND rc.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")
       end
       row :dokumente do |d|  
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
         .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
+        .order("r2.name")
       end
     end
   end  

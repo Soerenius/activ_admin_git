@@ -1,4 +1,4 @@
-ActiveAdmin.register Relcollect, { :sort_order => 'root_tables.name' } do
+ActiveAdmin.register Relcollect, { :sort_order => 'root_tables.name_asc' } do
   permit_params :guid, :guid_relroot, :guid_relcollection, :guid_typecollection, :root_table, :collection, :relationship
 
   actions :all, :except => [:new, :edit]
@@ -112,6 +112,14 @@ ActiveAdmin.register Relcollect, { :sort_order => 'root_tables.name' } do
       super.includes :root_table # prevents N+1 queries to your database
     end
     
+  end
+
+  csv do
+    column :guid
+    column :guid_relroot
+    column :guid_relcollection
+    column :created_at
+    column :updated_at   
   end
   
 end
