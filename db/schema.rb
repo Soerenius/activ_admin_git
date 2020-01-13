@@ -87,11 +87,6 @@ ActiveRecord::Schema.define(version: 2019_12_19_095559) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "fachobjekte_gruppen_views", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "fachobjekte_zu_gruppe_views", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -175,17 +170,6 @@ ActiveRecord::Schema.define(version: 2019_12_19_095559) do
      FROM root_tables r,
       object_tables o
     WHERE ((r.guid)::text = (o.guid)::text);
-  SQL
-  create_view "fachobjekte_gruppen_view", sql_definition: <<-SQL
-      SELECT r1.name,
-      string_agg((r2.name)::text, ','::text) AS string_agg
-     FROM root_tables r1,
-      root_tables r2,
-      object_tables o,
-      relassigncollections rac,
-      collections c
-    WHERE (((r1.guid)::text = (o.guid)::text) AND ((o.guid)::text = (rac.guid_relobject)::text) AND ((rac.guid_relcollection)::text = (c.guid)::text) AND ((r2.guid)::text = (c.guid)::text))
-    GROUP BY r1.name;
   SQL
   create_view "fachobjekte_zu_gruppe_view", sql_definition: <<-SQL
       SELECT r1.guid AS id,

@@ -23,16 +23,21 @@ default: &default
 
 development:
   <<: *default
-  database: oldb_aa_development
+  #database: oldb_aa_development
+  database: <%= ENV['DEVELOPMENT_DATABASE'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
   # the same name as the operating system user that initialized the database.
-  username: subuser
+  #username: subuser
+  username: <%= ENV['DATABASE_USER'] %>
+
 
   # The password associated with the postgres role (username).
-  password: dbpw2019
+  #password: dbpw2019
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -57,7 +62,9 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: oldb_aa_test
+  #database: oldb_aa_test
+  database: <%= ENV['TEST_DATABASE'] %>
+
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -79,7 +86,14 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
+  #primary: 
+  #  <<: *defaults 
+  #  url: <%= ENV['oldb_aa_DATABASE_URL'] %> 
+  #follower: 
+  #  <<: *defaults 
+  #  url: <%= ENV['land_bim_DATABASE_URL'] %> 
+
   <<: *default
-  database: oldb_aa_production
-  username: oldb_aa
-  password: <%= ENV['OLDB_AA_DATABASE_PASSWORD'] %>
+  database: <%= ENV['PRODUCTION_DATABASE'] %>
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>

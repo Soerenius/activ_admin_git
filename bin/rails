@@ -1,4 +1,12 @@
 #!/usr/bin/env ruby.exe
+require 'dotenv'
+Dotenv.load
 APP_PATH = File.expand_path('../config/application', __dir__)
 require_relative '../config/boot'
 require 'rails/commands'
+
+require 'dotenv/tasks'
+
+task mytask: :dotenv do
+    # things that require .env
+end
