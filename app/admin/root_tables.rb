@@ -92,15 +92,6 @@ ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
     before_destroy :before_destroy
 
     def update_object(guid)      
-      #binding.pry
-      #raise params.inspect
-      #if params[:root_table][:art]  == 'Fachobjekt' #&& params[:root_table][:collection1] != ''
-      #  ObjectTable.create(:guid => $uuid)
-      #elsif params[:root_table][:art] == 'Gruppe'
-      #  Collection.create(:guid => $uuid) 
-      #elsif params[:root_table][:art] == 'Externes Dokument'
-      #  Externaldocument.create(:guid => $uuid) 
-      #end
       if params[:root_table][:collection1] != ''
         @chosen = params[:root_table][:collection1]
         @chosen_uuid = RootTable.joins("INNER JOIN collections ON collections.guid=root_tables.guid").where(name: @chosen).ids[0]
@@ -122,7 +113,6 @@ ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
         @racuid = SecureRandom.uuid 
         @rcuid = SecureRandom.uuid 
         @guidvalue = $uuid
-        #raise @guidvalue.inspect 
         RootTable.create(:guid=>@racuid, :name=>'relationship')
         RootTable.create(:guid=>@rcuid, :name=>'relationship')
         Relationship.create(:guid=>@racuid) 
@@ -143,9 +133,9 @@ ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
 
     def before_destroy(guid)
       @delete_guid = params[:id]
-      @rel_ass_col = Relassigncollection.where(guid_relobject: @delete_guid).ids[0]
-      @rel_doc = Reldocument.where(guid_relroot: @delete_guid).ids[0]
-      @rel_col = Relcollect.where(guid_relroot: @delete_guid).ids[0]
+      @rel_ass_col = Relassigncollection.where(guid_relobject: @delete_guid).ids
+      @rel_doc = Reldocument.where(guid_relroot: @delete_guid).ids
+      @rel_col = Relcollect.where(guid_relroot: @delete_guid).ids
 
 
       if @rel_ass_col != nil

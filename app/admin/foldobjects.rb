@@ -140,7 +140,29 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
         Relationship.create(:guid=>@ruid) 
         Reldocument.create(:guid=>@ruid,:guid_relroot=>@guidvalue,:guid_reldocument=>@chosen_uuid) 
       end
-    end    
+    end 
+    
+    def before_destroy(guid)
+      @delete_guid = params[:id]
+      @rel_ass_col = Relassigncollection.where(guid_relobject: @delete_guid).ids
+      @rel_doc = Reldocument.where(guid_relroot: @delete_guid).ids
+      @rel_col = Relcollect.where(guid_relroot: @delete_guid).ids
+      #@ruid1 = Reldocument.where(guid_relroot: @delete_guid).ids
+
+
+      if @rel_ass_col != nil
+        RootTable.destroy(@rel_ass_col)
+      end
+
+      if @rel_doc != nil
+        RootTable.destroy(@rel_doc)
+      end
+
+      if @rel_col != nil
+        RootTable.destroy(@rel_col)
+      end
+
+    end
   end 
   
   action_item :new_group, priority: 0, only: :show do
