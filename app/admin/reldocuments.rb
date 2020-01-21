@@ -4,7 +4,7 @@ ActiveAdmin.register Reldocument, { :sort_order => 'root_tables.name_asc' } do
   actions :all, :except => [:new, :edit]
 
   #menu false 
-  menu label: "Zugeord. Dokumente" 
+  menu label: "Dokumenten-Zuordnung" 
 
   filter :root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Objekt'#, :collection =>  RootTable.find(:guid_relroot) 
   #filter :document_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Dokument'#, :collection =>  RootTable.find(:guid_relroot) 
@@ -14,7 +14,7 @@ ActiveAdmin.register Reldocument, { :sort_order => 'root_tables.name_asc' } do
     reldocuments.includes [:root_table]
   end
 
-  index :title => "Zugeord. Dokumente" do
+  index :title => "Dokumenten-Zuordnung" do
     #column "guid", :guid
     column "Objekt", sortable: 'root_tables.name' do |r|
       RootTable.find(r.guid_relroot)

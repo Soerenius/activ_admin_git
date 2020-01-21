@@ -50,7 +50,11 @@ ActiveAdmin.register Document do
       f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid")
       .select(:name).uniq, {:include_blank => "Dokument: Keine Zuordnung."}
     end
-    f.actions    
+    f.actions do
+      f.action :submit
+      f.action :cancel, label: 'Zurück', button_to: '/db/documents', :wrapper_html => { :class => 'cancel'}
+      f.action :cancel, label: "Cancel", :wrapper_html => { :class => 'cancel'}
+    end    
   end
 
   controller do
@@ -88,6 +92,10 @@ ActiveAdmin.register Document do
 
   action_item :new_group, priority: 0, only: :show do
     link_to 'Neues Dokument', '/db/documents/new'
+  end
+
+  action_item :back, priority: 1, only: :show do
+    link_to 'Zurück', '/db/documents'
   end
   
   show do

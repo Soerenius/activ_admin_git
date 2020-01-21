@@ -33,12 +33,14 @@ ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
 
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
       .where("r1.guid=o.guid AND o.guid=rac.guid_relobject AND rac.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")  
 
     end
     column :dokumente do |d|      
 
       RootTable.select("r2.*").from("root_tables r1, root_tables r2, reldocuments rd, externaldocuments d")
       .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
+      .order("r2.name")  
 
     end
     actions# :all, :except => [:edit, :destroy]
@@ -164,7 +166,11 @@ ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
 
     end    
 
-  end  
+  end 
+  
+  action_item :back, priority: 1, only: :show do
+    link_to 'Zurück', '/db/gesamts'
+  end
 
   show do
     attributes_table  do
@@ -177,6 +183,7 @@ ActiveAdmin.register RootTable, { :sort_order => :name_asc, as: 'Gesamt' } do
       row :gruppen do |c|
         RootTable.select("r2.*").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
       .where("r1.guid=o.guid AND o.guid=rac.guid_relobject AND rac.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
+      .order("r2.name")  
       end
     end
   end

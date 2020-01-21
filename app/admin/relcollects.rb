@@ -3,14 +3,14 @@ ActiveAdmin.register Relcollect, { :sort_order => 'root_tables.name_asc' } do
 
   actions :all, :except => [:new, :edit]
   
-  menu label: "Zugeord. Gruppen" 
+  menu label: "Gruppen-Zuordnung" 
 
   filter :root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Objekt'#, :collection =>  RootTable.find(:guid_relroot) 
-  filter :collection_root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Dokument'#, :collection =>  RootTable.find(:guid_relroot) 
+  filter :collection_root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Gruppe'#, :collection =>  RootTable.find(:guid_relroot) 
 
   #scope :all, :default => true
 
-  index :title => "Zugeord. Gruppen" do
+  index :title => "Gruppen-Zuordnung" do
     #column "guid", :guid
     column "Objekt", sortable: 'root_tables.name' do |r|
       RootTable.find(r.guid_relroot)

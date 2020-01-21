@@ -1,7 +1,7 @@
 ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
   permit_params :guid, :name, :versiondate, :versionid, :description, :created_at, :updated_at
 
-  menu label: "Klasse" 
+  menu label: "Fachobjekt" 
 
   filter :name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Objekt'#, :collection =>  RootTable.find(:guid_relroot) 
   #filter :collection_root_table_name, as: :string, filters: [:contains, :starts_with, :equals, :ends_with], label: 'Gruppe'#, :collection =>  RootTable.find(:guid_relroot) 
@@ -11,7 +11,7 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
   filter :created_at, label: 'created_at', as: :date_range
   filter :updated_at, label: 'updated_at', as: :date_range
 
-  index :title => "Klasse" do
+  index :title => "Fachobjekt" do
     #column :guid
     column :name
     column :versiondate
@@ -68,7 +68,12 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
       f.select :externaldocument2, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid ORDER BY root_tables.name")
       .select(:name).uniq, {:include_blank => "Dokument 2: Keine Zuordnung."}
     end
-    f.actions  
+    #f.actions  
+    f.actions do
+      f.action :submit
+      f.action :cancel, label: 'Zurück', button_to: '/db/objects', :wrapper_html => { :class => 'cancel'}
+      f.action :cancel, label: "Cancel", :wrapper_html => { :class => 'cancel'}
+    end
     
   end
 
@@ -142,7 +147,11 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
     link_to 'Neues Fachobjekt', '/db/objects/new'
   end
 
-  show do
+  action_item :back, priority: 1, only: :show do
+    link_to 'Zurück', '/db/objects'
+  end
+
+  show do 
     attributes_table  do
       row :guid
       row :name
@@ -152,7 +161,7 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
       row :created_at
       row :updated_at
       row :gruppen do |c|
-        RootTable.select("STRING_AGG (r2.name, ',')").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
+        RootTable.select("r2.*").from("root_tables r1, root_tables r2, object_tables o, relassigncollections rac, collections c")
       .where("r1.guid=o.guid AND o.guid=rac.guid_relobject AND rac.guid_relcollection=c.guid AND r2.guid=c.guid AND r1.guid='" + c.guid + "'")
       .order("r2.name")      
       end
@@ -161,8 +170,14 @@ ActiveAdmin.register Foldobject, { :sort_order => :name_asc, as: 'Object' } do
         .where("r1.guid=rd.guid_relroot AND rd.guid_reldocument=d.guid AND r2.guid=d.guid AND r1.guid='" + d.guid + "'")
         .order("r2.name")  
       end
-    end
+
+      #row :aktion do
+      #  link_to 'Zurück', '/db/objects'
+      #end
+    end 
   end
+
+  index download_links: [:json, :csv]
 
   csv do
     column :guid

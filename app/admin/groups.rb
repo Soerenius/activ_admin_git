@@ -63,12 +63,14 @@ ActiveAdmin.register Group, { :sort_order => :name_asc, as: 'Group'  }do
       f.select :externaldocument1, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid ORDER BY root_tables.name")
       .select(:name).uniq, {:include_blank => "Dokument 1: Keine Zuordnung."}
       f.select :externaldocument2, RootTable.joins("INNER JOIN externaldocuments ON externaldocuments.guid=root_tables.guid ORDER BY root_tables.name")
-      .select(:name).uniq, {:include_blank => "Dokument 2: Keine Zuordnung."}
-
-      
+      .select(:name).uniq, {:include_blank => "Dokument 2: Keine Zuordnung."}      
     end
 
-    f.actions    
+    f.actions do
+      f.action :submit
+      f.action :cancel, label: 'Zurück', button_to: '/db/groups', :wrapper_html => { :class => 'cancel'}
+      f.action :cancel, label: "Cancel", :wrapper_html => { :class => 'cancel'}
+    end   
   end
 
   controller do
@@ -132,6 +134,10 @@ ActiveAdmin.register Group, { :sort_order => :name_asc, as: 'Group'  }do
 
   action_item :new_group, priority: 0, only: :show do
     link_to 'Neue Gruppe', '/db/groups/new'
+  end
+
+  action_item :back, priority: 1, only: :show do
+    link_to 'Zurück', '/db/groups'
   end
   
   show do
